@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
+    <title>Acme with Axios and BootStrap</title>
+    
+</head>
+<body>
+    <div class='container'>
+        <h1>Acme w. Bootstrap and Axios VJS</h1>
+        <ul class='nav nav-tabs'>
+            <li class='nav-item'>
+                <a class='nav-link' id='companiesLink' href="#companies">
+                    Companies
+                </a>
+            </li>
+            <li class='nav-item'>
+                <a class='nav-link' id='productsLink' href="#products">
+                    Products
+                </a>
+                
+            </li>
+        </ul>
+        <h2 id='title'></h2>
+        <table class='table table-striped'>
+            <thead>
+                <tr id='tableTitles'></tr>
+            </thead>
+            <tbody id='companyList'>
+            </tbody>
+        </table>
+      
+                
+    </div>
+</body>
+    <script>
+        results=document.querySelector('#results');
+        productsList=document.querySelector('#productsList');
+        tableTitle=document.querySelector('#tableTitles');
+        tableBody=document.querySelector('#companyList');
+
+        const loadCompanies = (page) => {
+        axios.get(`https://acme-users-api-rev.herokuapp.com/api/companies`)
+          .then(response => response.data)
+          .then( data => {
+              let info=Object.keys(data[0]);
+              tableTitle.innerHTML=''
+              tableBody.innerHTML=''
+
+            info.forEach(stuff=>{
+                let title=`<th scope="col">${stuff}</th>`
+                tableTitle.innerHTML+=title;
+            })
+
+            data.forEach(company=>{
+
+                let card=document.createElement('tr');
+                                
+                info.forEach(fact=>{
+                    let text=document.createElement('td');
+                    text.innerHTML=`${company[fact]}`
+                    card.appendChild(text);
+                })         
+                tableBody.appendChild(card)
+                }
+            )
+          })
+        };  
+
+
+        const renderProducts=(page)=>{
+            axios.get(`https://acme-users-api-rev.herokuapp.com/api/products`)
+            .then(response => response.data)
+            .then( data => {
+              console.log(data);
+              let info=Object.keys(data[0]);
+              tableTitle.innerHTML=''
+              tableBody.innerHTML=''
+
+            info.forEach(stuff=>{
+                let title=`<th scope="col">${stuff}</th>`
+                tableTitle.innerHTML+=title;
+            })
+
+            data.forEach(company=>{
+
+                let card=document.createElement('tr');
+                
+                info.forEach(fact=>{
+                    let text=document.createElement('td');
+                    text.innerHTML=`${company[fact]}`
+                    card.appendChild(text);
+                })         
+                tableBody.appendChild(card)
+                }
+            )
+          })
+        };
+
+        window.addEventListener('hashchange',(ev)=>{
+            console.log(window.location.hash)
+            if(window.location.hash.slice(1)==='products'){
+                renderProducts();
+            }
+            if(window.location.hash.slice(1)==='companies'){
+                loadCompanies();
+            }
+        })
+
+      loadCompanies();
+ 
+    </script>
+</html>
